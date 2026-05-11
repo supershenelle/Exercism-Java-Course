@@ -1,6 +1,6 @@
 # ☕ Exercism Java Learning Journey
 
-> A structured, hands-on exploration of Java through [Exercism.io](https://exercism.org/tracks/java) — solving real exercises, building fluency, and growing as a developer one concept at a time.
+> A structured, hands-on exploration of Java through [Exercism](https://exercism.org/tracks/java) — solving real exercises, building fluency, and growing as a developer one concept at a time.
 
 ---
 
@@ -109,9 +109,3 @@ If you're also on your Java journey, feel free to reach out or follow along!
 
 - 💼 [GitHub](https://github.com/supershenelle)
 - 🧩 [Exercism](https://exercism.org/profiles/supershenelle)
-
----
-
-<p align="center">
-  <em>Built with curiosity, caffeine, and a lot of compiler errors. ☕</em>
-</p>
