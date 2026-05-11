@@ -33,24 +33,6 @@ Each folder contains:
 
 ---
 
-## ✅ Completed Exercises
-
-| # | Exercise | Difficulty | Concepts Practiced |
-|---|----------|------------|-------------------|
-| 1 | Hello World | 🟢 Easy | Setup, basic output |
-| 2 | Two Fer | 🟢 Easy | String formatting, default parameters |
-| 3 | Leap | 🟢 Easy | Conditionals, boolean logic |
-| 4 | Raindrops | 🟢 Easy | Conditionals, string building |
-| 5 | Scrabble Score | 🟢 Easy | Loops, Maps, characters |
-| 6 | Grains | 🟡 Medium | Math, long arithmetic, exceptions |
-| 7 | Space Age | 🟡 Medium | Enums, arithmetic, constants |
-| 8 | Bob | 🟡 Medium | String methods, conditionals |
-| 9 | Pangram | 🟡 Medium | Streams, character sets |
-| 10 | Isogram | 🟡 Medium | Sets, uniqueness checks |
-
-> 📌 *This table is updated as exercises are completed.*
-
----
 
 ## 📚 Concepts Learned
 
@@ -109,24 +91,6 @@ Each folder contains:
 - [ ] Achieve **fluency** in Java fundamentals
 - [ ] Explore advanced topics: generics, concurrency, design patterns
 - [ ] Contribute to open-source Java projects
-
----
-
-## 🚀 How to Run
-
-Make sure you have **Java 17+** and **Gradle** installed.
-
-```bash
-# Clone the repository
-git clone https://github.com/supershenelle/exercism-java.git
-cd exercism-java
-
-# Navigate to an exercise
-cd exercises/hello-world
-
-# Run the tests
-./gradlew test
-```
 
 ---
 
