@@ -20,6 +20,7 @@ This repository documents my personal Java learning journey on **Exercism** — 
 |---|----------|------------|-------------------|
 | 1 | Hello World | 🟢 Easy | Setup, basic output |
 | 2 | Cook Your Own Lasagna | 🟢 Easy | Methods, return types, constants, basic arithmetic |
+| 3 | Log Levels | 🟢 Easy | Strings, search position, concatenation |
 
 > 📌 *Updated as exercises are completed.*
 
