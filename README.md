@@ -16,6 +16,7 @@ This repository documents my personal Java learning journey on **Exercism** — 
 
 ## ✅ Completed Exercises
 
+**View Solutions:** [HERE](https://github.com/supershenelle/Exercism-Java-Course/branches)
 | # | Exercise | Concepts Practiced |
 |---|----------|--------------------|
 | 1 | Hello World | Setup, basic output |
