@@ -16,11 +16,13 @@ This repository documents my personal Java learning journey on **Exercism** — 
 
 ## ✅ Completed Exercises
 
-| # | Exercise | Difficulty | Concepts Practiced |
-|---|----------|------------|-------------------|
-| 1 | Hello World | 🟢 Easy | Setup, basic output |
-| 2 | Cook Your Own Lasagna | 🟢 Easy | Methods, return types, constants, basic arithmetic |
-| 3 | Log Levels | 🟢 Easy | Strings, search position, concatenation |
+| # | Exercise | Concepts Practiced |
+|---|----------|--------------------|
+| 1 | Hello World | Setup, basic output |
+| 2 | Cook Your Own Lasagna | Methods, return types, constants, basic arithmetic |
+| 3 | Log Levels | Strings, search position, concatenation |
+| 4 | Infiltration | Booleans |
+| 5 | Car Assembly | If-else statements, numbers |
 
 > 📌 *Updated as exercises are completed.*
 
