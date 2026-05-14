@@ -26,6 +26,12 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 5 | Car Assembly | If-else statements, numbers |
 | 6 | Jedlik's Car | Class, fields, dot notation |
 | 7 | Bird Watcher | Arrays, for-each loops, for loops |
+| 8 | Leap Year Logic | Boolean, numbers |
+| 9 | Two Fer | Strings, conditions |
+| 10 | Say | If-else, arrays, strings |
+| 11 | Darts | If condition, math functions |
+| 12 | Tim Marketing | Nullability, string functions |
+
 
 > 📌 *Updated as exercises are completed.*
 
