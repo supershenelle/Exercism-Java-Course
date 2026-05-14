@@ -24,6 +24,8 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 3 | Log Levels | Strings, search position, concatenation |
 | 4 | Infiltration | Booleans |
 | 5 | Car Assembly | If-else statements, numbers |
+| 6 | Jedlik's Car | Class, fields, dot notation |
+| 7 | Bird Watcher | Arrays, for-each loops, for loops |
 
 > 📌 *Updated as exercises are completed.*
 
