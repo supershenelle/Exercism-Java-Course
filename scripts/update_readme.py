@@ -77,25 +77,47 @@ def fetch_solutions(headers):
     """
     Return a list of completed/published solutions for the Java track,
     ordered by completion date (oldest first).
+
+    Uses /tracks/{track}/exercises?sideload[]=solutions which is the
+    correct Exercism v2 endpoint for fetching a user's own solutions.
+    Falls back to /solutions endpoint if the first returns nothing.
     """
     print("📥  Fetching your Exercism solutions …")
-    url = f"{EXERCISM_API}/solutions?track_slug={TRACK}&order=oldest_first"
     solutions = []
 
-    while url:
-        resp = requests.get(url, headers=headers, timeout=15)
-        if resp.status_code == 401:
-            print("❌  Invalid or expired EXERCISM_TOKEN.", file=sys.stderr)
-            sys.exit(1)
-        resp.raise_for_status()
+    # ── Strategy 1: sideload solutions from the exercises endpoint ────────────
+    url = f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions"
+    resp = requests.get(url, headers=headers, timeout=15)
+    if resp.status_code == 401:
+        print("❌  Invalid or expired EXERCISM_TOKEN.", file=sys.stderr)
+        sys.exit(1)
+
+    if resp.ok:
         data = resp.json()
+        # Print raw keys to help debug if still 0
+        print(f"   ℹ️   API response keys: {list(data.keys())}")
         for sol in data.get("solutions", []):
             status = sol.get("status", "")
-            if status in ("published", "completed", "iterated"):
+            print(f"   ℹ️   Exercise: {sol.get('exercise', {}).get('slug')} | status: {status}")
+            if status in ("published", "completed", "iterated", "started"):
                 solutions.append(sol)
-        # Handle pagination
-        next_page = data.get("meta", {}).get("links", {}).get("next")
-        url = next_page if next_page else None
+
+    # ── Strategy 2: fallback to /solutions endpoint ───────────────────────────
+    if not solutions:
+        print("   ⚠️  Strategy 1 returned 0 — trying /solutions fallback …")
+        url2 = f"{EXERCISM_API}/solutions?track_slug={TRACK}"
+        resp2 = requests.get(url2, headers=headers, timeout=15)
+        if resp2.ok:
+            data2 = resp2.json()
+            print(f"   ℹ️   Fallback API response keys: {list(data2.keys())}")
+            for sol in data2.get("solutions", []):
+                status = sol.get("status", "")
+                print(f"   ℹ️   Exercise: {sol.get('exercise', {}).get('slug')} | status: {status}")
+                if status in ("published", "completed", "iterated", "started"):
+                    solutions.append(sol)
+
+    # Sort oldest first by submitted_at date
+    solutions.sort(key=lambda s: s.get("submitted_at") or s.get("created_at") or "")
 
     print(f"   ✅  Found {len(solutions)} completed solution(s).")
     return solutions
