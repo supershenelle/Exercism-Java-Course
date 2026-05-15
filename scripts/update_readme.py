@@ -38,16 +38,14 @@ CONCEPT_RULES = [
     ("Enums",               [r"\benum\b"]),
     ("Abstract classes",    [r"\babstract\b"]),
     ("Generics",            [r"<[A-Z]\w*>"]),
-
     # Control flow
     ("If/else",             [r"\bif\s*\(", r"\belse\b"]),
     ("Switch statement",    [r"\bswitch\s*\("]),
     ("For loop",            [r"\bfor\s*\("]),
     ("While loop",          [r"\bwhile\s*\("]),
     ("Do-while loop",       [r"\bdo\s*\{"]),
-    ("Ternary operator",    [r"\?[^:]+:"]),
+    ("Ternary operator",    [r"\?[^:\n]+:"]),
     ("Break/continue",      [r"\b(break|continue)\b"]),
-
     # Data types
     ("Booleans",            [r"\bboolean\b"]),
     ("Integers",            [r"\b(int|long|short|byte)\b"]),
@@ -55,31 +53,25 @@ CONCEPT_RULES = [
     ("Constants",           [r"\bfinal\b"]),
     ("Type casting",        [r"\([a-z]+\)\s*\w"]),
     ("Null checks",         [r"\bnull\b"]),
-
     # Strings
     ("String methods",      [r"\.(toUpperCase|toLowerCase|substring|indexOf|contains|replace|split|trim|startsWith|endsWith|charAt|length)\s*\("]),
     ("String concatenation",[r'"\s*\+']),
     ("String formatting",   [r"String\.format\s*\(", r"\.formatted\s*\("]),
     ("StringBuilder",       [r"\bStringBuilder\b"]),
     ("Char operations",     [r"\bchar\b"]),
-
     # Math
     ("Math class",          [r"\bMath\."]),
-
     # Arrays
     ("Arrays",              [r"\w+\s*\[\]", r"\bArrays\."]),
-
     # Collections
     ("ArrayList",           [r"\bArrayList\b"]),
     ("HashMap",             [r"\bHashMap\b"]),
     ("HashSet",             [r"\bHashSet\b"]),
     ("Collections API",     [r"\bCollections\."]),
-
     # Functional
     ("Lambda expressions",  [r"->"]),
     ("Streams API",         [r"\.stream\(\)"]),
     ("Optional",            [r"\bOptional\b"]),
-
     # Exceptions
     ("Try/catch",           [r"\btry\s*\{", r"\bcatch\s*\("]),
     ("Throws",              [r"\bthrows\b"]),
@@ -129,31 +121,41 @@ def fetch_solutions(headers: dict) -> list:
     print("📥  Fetching your Exercism solutions …")
     solutions = []
 
-    url = f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions"
-    resp = requests.get(url, headers=headers, timeout=15)
-    if resp.status_code == 401:
-        print("❌  Invalid or expired EXERCISM_TOKEN.", file=sys.stderr)
-        sys.exit(1)
+    # Paginate through /api/v2/solutions (no track filter — get all, filter below)
+    url = f"{EXERCISM_API}/solutions?track_slug={TRACK}"
+    while url:
+        resp = requests.get(url, headers=headers, timeout=15)
+        if resp.status_code == 401:
+            print("❌  Invalid or expired EXERCISM_TOKEN.", file=sys.stderr)
+            sys.exit(1)
+        if not resp.ok:
+            print(f"   ⚠️  Got HTTP {resp.status_code} from {url}")
+            break
 
-    if resp.ok:
         data = resp.json()
         for sol in data.get("solutions", []):
             status = sol.get("status", "")
             slug   = sol.get("exercise", {}).get("slug", "?")
-            print(f"        {slug} → status={status} | uuid={sol.get('uuid', 'NO-UUID')}")
+            uuid   = sol.get("uuid", "")
+            print(f"        {slug} → status={status!r} uuid={uuid}")
             if status in ("published", "completed", "iterated", "started"):
                 solutions.append(sol)
 
+        # Follow pagination
+        url = data.get("meta", {}).get("links", {}).get("next")
+
+    # Also try the sideload endpoint as a second source
     if not solutions:
-        print("   ⚠️  Trying /solutions fallback …")
-        url2  = f"{EXERCISM_API}/solutions?track_slug={TRACK}"
+        print("   ⚠️  /solutions returned 0, trying sideload endpoint …")
+        url2 = f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions"
         resp2 = requests.get(url2, headers=headers, timeout=15)
         if resp2.ok:
             data2 = resp2.json()
             for sol in data2.get("solutions", []):
                 status = sol.get("status", "")
                 slug   = sol.get("exercise", {}).get("slug", "?")
-                print(f"        {slug} → status={status} | uuid={sol.get('uuid', 'NO-UUID')}")
+                uuid   = sol.get("uuid", "")
+                print(f"        {slug} → status={status!r} uuid={uuid}")
                 if status in ("published", "completed", "iterated", "started"):
                     solutions.append(sol)
 
@@ -161,71 +163,65 @@ def fetch_solutions(headers: dict) -> list:
     print(f"   ✅  Found {len(solutions)} solution(s).")
     return solutions
 
-# ── Fetch solution source code ────────────────────────────────────────────────
+# ── Fetch solution source code via iterations sideload ────────────────────────
 
 def fetch_solution_code(solution: dict, headers: dict) -> str:
     """
-    Try multiple approaches to get the .java source for a solution.
-    Prints debug info so we can see exactly what's happening.
+    Uses the correct Exercism API pattern:
+      GET /api/v2/solutions/{uuid}?sideload[]=iterations
+    then follows the links in the latest iteration to download files.
     """
-    # The UUID can live in different places depending on the endpoint used
-    uuid = (
-        solution.get("uuid")
-        or solution.get("id")
-        or solution.get("solution", {}).get("uuid")
-        or ""
-    )
-
-    slug = solution.get("exercise", {}).get("slug", "?")
-    print(f"      📄  {slug}: uuid={uuid!r}")
+    uuid  = solution.get("uuid", "")
+    slug  = solution.get("exercise", {}).get("slug", "?")
 
     if not uuid:
-        print(f"      ⚠️  No UUID found for {slug}, skipping file fetch.")
+        print(f"      ⚠️  No UUID for {slug}")
         return ""
 
-    # ── Approach A: /solutions/{uuid}/files listing ───────────────────────────
-    files_url = f"{EXERCISM_API}/solutions/{uuid}/files"
-    print(f"      🌐  GET {files_url}")
-    resp = requests.get(files_url, headers=headers, timeout=15)
-    print(f"           → HTTP {resp.status_code}")
+    # Step 1: get solution detail with iterations sideloaded
+    detail_url = f"{EXERCISM_API}/solutions/{uuid}?sideload[]=iterations"
+    resp = requests.get(detail_url, headers=headers, timeout=15)
+    print(f"      🌐  {detail_url} → HTTP {resp.status_code}")
+    if not resp.ok:
+        return ""
 
-    if resp.ok:
-        payload = resp.json()
-        print(f"           → keys: {list(payload.keys())}")
-        files = payload.get("files", [])
-        print(f"           → {len(files)} file(s): {[f.get('filename','?') for f in files]}")
+    data       = resp.json()
+    iterations = data.get("iterations", [])
+    print(f"           {len(iterations)} iteration(s) found")
 
-        code_parts = []
-        for file_info in files:
-            filename = file_info.get("filename", "")
-            if filename.endswith(".java") and "Test" not in filename:
-                # try download_url first, then url, then filename-based download
-                file_url = (
-                    file_info.get("download_url")
-                    or file_info.get("url")
-                    or f"{EXERCISM_API}/solutions/{uuid}/files/{filename}"
-                )
-                print(f"           → downloading {filename} from {file_url}")
-                fr = requests.get(file_url, headers=headers, timeout=15)
-                print(f"              HTTP {fr.status_code} | {len(fr.text)} chars")
-                if fr.ok and fr.text.strip():
-                    code_parts.append(fr.text)
+    if not iterations:
+        return ""
 
-        if code_parts:
-            return "\n\n".join(code_parts)
+    # Step 2: get the latest iteration's files_url
+    latest     = iterations[-1]
+    files_url  = latest.get("files_url", "")
+    print(f"           files_url = {files_url!r}")
 
-    # ── Approach B: direct file download by convention ────────────────────────
-    # Exercism stores files at /solutions/{uuid}/files/src/main/java/{PascalSlug}.java
-    pascal = "".join(w.capitalize() for w in slug.split("-"))
-    direct_url = f"{EXERCISM_API}/solutions/{uuid}/files/src/main/java/{pascal}.java"
-    print(f"      🌐  Trying direct: {direct_url}")
-    dr = requests.get(direct_url, headers=headers, timeout=15)
-    print(f"           → HTTP {dr.status_code} | {len(dr.text)} chars")
-    if dr.ok and dr.text.strip():
-        return dr.text
+    if not files_url:
+        return ""
 
-    print(f"      ⚠️  Could not retrieve code for {slug}")
-    return ""
+    # Step 3: fetch the file listing
+    fr = requests.get(files_url, headers=headers, timeout=15)
+    print(f"      🌐  files listing → HTTP {fr.status_code}")
+    if not fr.ok:
+        return ""
+
+    files      = fr.json().get("files", [])
+    print(f"           {len(files)} file(s): {[f.get('filename','?') for f in files]}")
+
+    # Step 4: download each .java solution file (skip test files)
+    code_parts = []
+    for file_info in files:
+        filename = file_info.get("filename", "")
+        if filename.endswith(".java") and "Test" not in filename:
+            file_url = file_info.get("url") or file_info.get("download_url", "")
+            if file_url:
+                fc = requests.get(file_url, headers=headers, timeout=15)
+                print(f"           {filename} → HTTP {fc.status_code} | {len(fc.text)} chars")
+                if fc.ok and fc.text.strip():
+                    code_parts.append(fc.text)
+
+    return "\n\n".join(code_parts)
 
 # ── Build table ───────────────────────────────────────────────────────────────
 
@@ -258,7 +254,7 @@ def build_table(solutions: list, headers: dict) -> str:
             print(f"        → detected: {concepts}")
             cache[slug] = concepts
             changed = True
-            time.sleep(0.3)
+            time.sleep(0.5)  # be gentle with the API
 
         rows.append(f"| {i} | [{title}]({url}) | {concepts} |")
 
