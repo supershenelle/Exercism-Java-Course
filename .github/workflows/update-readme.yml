@@ -26,6 +26,9 @@ jobs:
       - name: 📦 Install dependencies
         run: pip install requests
 
+      - name: 🗑️ Clear concepts cache (force re-scan)
+        run: rm -f scripts/.concepts_cache.json
+
       - name: 🚀 Run update script
         run: python scripts/update_readme.py
         env:
