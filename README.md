@@ -1,11 +1,9 @@
 # ☕ Exercism Java Learning Journey
-
 > A structured, hands-on exploration of Java through [Exercism](https://exercism.org/tracks/java) — solving real exercises, building fluency, and growing as a developer one concept at a time.
 
 ---
 
 ## 👩‍💻 About
-
 This repository documents my personal Java learning journey on **Exercism** — an open-source platform for mastering programming through practice and mentorship. Every exercise here represents a problem solved, a concept understood, and a step forward in my growth as a Java developer.
 
 **GitHub:** [@supershenelle](https://github.com/supershenelle)  
@@ -17,23 +15,26 @@ This repository documents my personal Java learning journey on **Exercism** — 
 ## ✅ Completed Exercises
 
 **View Solutions:** [HERE](https://exercism.org/profiles/supershenelle) or alternatively [HERE](https://github.com/supershenelle/Exercism-Java-Course/branches)
+
+<!-- EXERCISM-START -->
 | # | Exercise | Concepts Practiced |
 |---|----------|--------------------|
-| 1 | Hello World | Setup, basic output |
-| 2 | Cook Your Own Lasagna | Methods, return types, constants, basic arithmetic |
-| 3 | Log Levels | Strings, search position, concatenation |
-| 4 | Infiltration | Booleans |
-| 5 | Car Assembly | If-else statements, numbers |
-| 6 | Jedlik's Car | Class, fields, dot notation |
-| 7 | Bird Watcher | Arrays, for-each loops, for loops |
-| 8 | Leap Year Logic | Boolean, numbers |
-| 9 | Two Fer | Strings, conditions |
-| 10 | Say | If-else, arrays, strings |
-| 11 | Darts | If condition, math functions |
-| 12 | Tim Marketing | Nullability, string functions |
+| 1 | [Hello World](https://exercism.org/tracks/java/exercises/hello-world) | Basics |
+| 2 | [Cook Your Own Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | Basics |
+| 3 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | Strings |
+| 4 | [Infiltration](https://exercism.org/tracks/java/exercises/infiltration) | Booleans |
+| 5 | [Car Assembly](https://exercism.org/tracks/java/exercises/cars-assemble) | If Statements, Numbers |
+| 6 | [Jedlik's Car](https://exercism.org/tracks/java/exercises/jedliks-car) | Classes |
+| 7 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Arrays |
+| 8 | [Leap Year Logic](https://exercism.org/tracks/java/exercises/leap) | Booleans, Numbers |
+| 9 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | Strings, Conditionals |
+| 10 | [Say](https://exercism.org/tracks/java/exercises/say) | If Else, Arrays, Strings |
+| 11 | [Darts](https://exercism.org/tracks/java/exercises/darts) | If Condition, Math Functions |
+| 12 | [Tim Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | Nullability, String Functions |
+| 12 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operators |
+<!-- EXERCISM-END -->
 
-
-> 📌 *Updated as exercises are completed.*
+> 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*
 
 ---
 
@@ -77,7 +78,6 @@ This repository documents my personal Java learning journey on **Exercism** — 
 ---
 
 ## 🎯 Goals
-
 - [ ] Build a consistent daily practice habit
 - [ ] Complete the Java fundamentals on Exercism
 - [ ] Explore advanced topics: generics, concurrency, design patterns
@@ -85,11 +85,6 @@ This repository documents my personal Java learning journey on **Exercism** — 
 ---
 
 ## 📖 Resources
-
 - [Exercism Java Track](https://exercism.org/tracks/java)
 - [Official Java Documentation](https://docs.oracle.com/en/java/)
 - [Baeldung Java Guides](https://www.baeldung.com/)
-
----
-
-<p align="center"><em>Built with curiosity, caffeine, and a lot of compiler errors. ☕</em></p>
