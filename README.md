@@ -19,19 +19,20 @@ This repository documents my personal Java learning journey on **Exercism** — 
 <!-- EXERCISM-START -->
 | # | Exercise | Concepts Practiced |
 |---|----------|--------------------|
-| 1 | [Hello World](https://exercism.org/tracks/java/exercises/hello-world) | Basics |
-| 2 | [Cook Your Own Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | Basics |
-| 3 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | Strings |
-| 4 | [Infiltration](https://exercism.org/tracks/java/exercises/infiltration) | Booleans |
-| 5 | [Car Assembly](https://exercism.org/tracks/java/exercises/cars-assemble) | If Statements, Numbers |
-| 6 | [Jedlik's Car](https://exercism.org/tracks/java/exercises/jedliks-car) | Classes |
-| 7 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Arrays |
-| 8 | [Leap Year Logic](https://exercism.org/tracks/java/exercises/leap) | Booleans, Numbers |
-| 9 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | Strings, Conditionals |
-| 10 | [Say](https://exercism.org/tracks/java/exercises/say) | If Else, Arrays, Strings |
-| 11 | [Darts](https://exercism.org/tracks/java/exercises/darts) | If Condition, Math Functions |
-| 12 | [Tim Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | Nullability, String Functions |
-| 12 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operators |
+| 1 | [Hello World](https://exercism.org/tracks/java/exercises/hello-world) | — |
+| 2 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | — |
+| 3 | [Darts](https://exercism.org/tracks/java/exercises/darts) | — |
+| 4 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | — |
+| 5 | [Leap](https://exercism.org/tracks/java/exercises/leap) | — |
+| 6 | [Say](https://exercism.org/tracks/java/exercises/say) | — |
+| 7 | [Cook Your Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | Basics |
+| 8 | [Annalyn's Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | Booleans |
+| 9 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Arrays, For Loops, Foreach Loops |
+| 10 | [Jedlik's Toy Car](https://exercism.org/tracks/java/exercises/jedliks-toy-car) | Classes |
+| 11 | [Cars, Assemble!](https://exercism.org/tracks/java/exercises/cars-assemble) | If Else Statements, Numbers |
+| 12 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | Strings |
+| 13 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary Operators |
+| 14 | [Tim from Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | Nullability |
 <!-- EXERCISM-END -->
 
 > 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*
