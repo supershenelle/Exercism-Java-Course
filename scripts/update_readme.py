@@ -1,9 +1,6 @@
 """
 update_readme.py
 ────────────────
-Fetches your completed Exercism Java solutions, downloads each solution's
-actual source code, scans it for Java concepts using keyword/pattern matching,
-then rewrites the <!-- EXERCISM-START --> … <!-- EXERCISM-END --> block in README.md.
 
 Requirements
   pip install requests
@@ -29,15 +26,13 @@ MARKER_END    = "<!-- EXERCISM-END -->"
 CACHE_PATH    = "scripts/.concepts_cache.json"
 
 # ── Concept detection rules ───────────────────────────────────────────────────
-# Each entry: (label, [patterns that must match at least one])
-# Patterns are plain strings or regex checked against the full source code.
 
 CONCEPT_RULES = [
     # OOP
     ("Classes",             [r"\bclass\b"]),
     ("Inheritance",         [r"\bextends\b"]),
     ("Interfaces",          [r"\bimplements\b", r"\binterface\b"]),
-    ("Constructors",        [r"\bpublic\s+\w+\s*\("]),
+    ("Constructors",        [r"public\s+[A-Z]\w+\s*\("]),
     ("Access modifiers",    [r"\b(private|protected)\b"]),
     ("Static members",      [r"\bstatic\b"]),
     ("Enums",               [r"\benum\b"]),
@@ -50,10 +45,10 @@ CONCEPT_RULES = [
     ("For loop",            [r"\bfor\s*\("]),
     ("While loop",          [r"\bwhile\s*\("]),
     ("Do-while loop",       [r"\bdo\s*\{"]),
-    ("Ternary operator",    [r"\?.*:"]),
+    ("Ternary operator",    [r"\?[^:]+:"]),
     ("Break/continue",      [r"\b(break|continue)\b"]),
 
-    # Data types & variables
+    # Data types
     ("Booleans",            [r"\bboolean\b"]),
     ("Integers",            [r"\b(int|long|short|byte)\b"]),
     ("Doubles/floats",      [r"\b(double|float)\b"]),
@@ -62,60 +57,46 @@ CONCEPT_RULES = [
     ("Null checks",         [r"\bnull\b"]),
 
     # Strings
-    ("String methods",      [r'"\s*\+', r"\.(toUpperCase|toLowerCase|substring|indexOf|contains|replace|split|trim|startsWith|endsWith|charAt|length)\s*\("]),
+    ("String methods",      [r"\.(toUpperCase|toLowerCase|substring|indexOf|contains|replace|split|trim|startsWith|endsWith|charAt|length)\s*\("]),
+    ("String concatenation",[r'"\s*\+']),
     ("String formatting",   [r"String\.format\s*\(", r"\.formatted\s*\("]),
     ("StringBuilder",       [r"\bStringBuilder\b"]),
     ("Char operations",     [r"\bchar\b"]),
 
     # Math
     ("Math class",          [r"\bMath\."]),
-    ("Arithmetic",          [r"[\+\-\*\/\%]=?\s*\d"]),
 
     # Arrays
-    ("Arrays",              [r"\w+\[\]", r"\bArrays\."]),
-    ("Multi-dim arrays",    [r"\w+\[\]\[\]"]),
+    ("Arrays",              [r"\w+\s*\[\]", r"\bArrays\."]),
 
     # Collections
     ("ArrayList",           [r"\bArrayList\b"]),
     ("HashMap",             [r"\bHashMap\b"]),
     ("HashSet",             [r"\bHashSet\b"]),
-    ("List interface",      [r"\bList\b"]),
     ("Collections API",     [r"\bCollections\."]),
 
-    # Functional / Streams
+    # Functional
     ("Lambda expressions",  [r"->"]),
-    ("Streams API",         [r"\.stream\(\)", r"\bStream\b"]),
+    ("Streams API",         [r"\.stream\(\)"]),
     ("Optional",            [r"\bOptional\b"]),
 
-    # Exception handling
+    # Exceptions
     ("Try/catch",           [r"\btry\s*\{", r"\bcatch\s*\("]),
     ("Throws",              [r"\bthrows\b"]),
-    ("Custom exceptions",   [r"\bextends\s+Exception\b", r"\bextends\s+RuntimeException\b"]),
-
-    # I/O & misc
-    ("Recursion",           [r"\b(\w+)\s*\(.*\).*\{[\s\S]*?\1\s*\("]),  # method calls itself
-    ("Varargs",             [r"\.\.\."]),
-    ("Annotations",         [r"@\w+"]),
 ]
 
-MAX_CONCEPTS = 6  # cap per exercise to keep the table readable
+MAX_CONCEPTS = 6
 
 def detect_concepts(code: str) -> str:
-    """Scan Java source code and return a comma-separated list of concepts found."""
     if not code.strip():
         return "—"
-
     found = []
     for label, patterns in CONCEPT_RULES:
         for pattern in patterns:
             if re.search(pattern, code):
                 found.append(label)
-                break  # one match per rule is enough
-
-    if not found:
-        return "Basic output"
-
-    return ", ".join(found[:MAX_CONCEPTS])
+                break
+    return ", ".join(found[:MAX_CONCEPTS]) if found else "Basic output"
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -148,7 +129,6 @@ def fetch_solutions(headers: dict) -> list:
     print("📥  Fetching your Exercism solutions …")
     solutions = []
 
-    # Strategy 1 — sideload solutions alongside exercises
     url = f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions"
     resp = requests.get(url, headers=headers, timeout=15)
     if resp.status_code == 401:
@@ -157,26 +137,23 @@ def fetch_solutions(headers: dict) -> list:
 
     if resp.ok:
         data = resp.json()
-        print(f"   ℹ️   Strategy 1 keys: {list(data.keys())}")
         for sol in data.get("solutions", []):
             status = sol.get("status", "")
             slug   = sol.get("exercise", {}).get("slug", "?")
-            print(f"        {slug} → {status}")
+            print(f"        {slug} → status={status} | uuid={sol.get('uuid', 'NO-UUID')}")
             if status in ("published", "completed", "iterated", "started"):
                 solutions.append(sol)
 
-    # Strategy 2 — fallback
     if not solutions:
-        print("   ⚠️  Strategy 1 returned 0 — trying /solutions fallback …")
+        print("   ⚠️  Trying /solutions fallback …")
         url2  = f"{EXERCISM_API}/solutions?track_slug={TRACK}"
         resp2 = requests.get(url2, headers=headers, timeout=15)
         if resp2.ok:
             data2 = resp2.json()
-            print(f"   ℹ️   Strategy 2 keys: {list(data2.keys())}")
             for sol in data2.get("solutions", []):
                 status = sol.get("status", "")
                 slug   = sol.get("exercise", {}).get("slug", "?")
-                print(f"        {slug} → {status}")
+                print(f"        {slug} → status={status} | uuid={sol.get('uuid', 'NO-UUID')}")
                 if status in ("published", "completed", "iterated", "started"):
                     solutions.append(sol)
 
@@ -187,29 +164,68 @@ def fetch_solutions(headers: dict) -> list:
 # ── Fetch solution source code ────────────────────────────────────────────────
 
 def fetch_solution_code(solution: dict, headers: dict) -> str:
-    solution_uuid = solution.get("uuid") or solution.get("id", "")
-    if not solution_uuid:
+    """
+    Try multiple approaches to get the .java source for a solution.
+    Prints debug info so we can see exactly what's happening.
+    """
+    # The UUID can live in different places depending on the endpoint used
+    uuid = (
+        solution.get("uuid")
+        or solution.get("id")
+        or solution.get("solution", {}).get("uuid")
+        or ""
+    )
+
+    slug = solution.get("exercise", {}).get("slug", "?")
+    print(f"      📄  {slug}: uuid={uuid!r}")
+
+    if not uuid:
+        print(f"      ⚠️  No UUID found for {slug}, skipping file fetch.")
         return ""
 
-    files_url = f"{EXERCISM_API}/solutions/{solution_uuid}/files"
+    # ── Approach A: /solutions/{uuid}/files listing ───────────────────────────
+    files_url = f"{EXERCISM_API}/solutions/{uuid}/files"
+    print(f"      🌐  GET {files_url}")
     resp = requests.get(files_url, headers=headers, timeout=15)
-    if not resp.ok:
-        print(f"      ⚠️  Could not fetch files list: {resp.status_code}")
-        return ""
+    print(f"           → HTTP {resp.status_code}")
 
-    files = resp.json().get("files", [])
-    code_parts = []
+    if resp.ok:
+        payload = resp.json()
+        print(f"           → keys: {list(payload.keys())}")
+        files = payload.get("files", [])
+        print(f"           → {len(files)} file(s): {[f.get('filename','?') for f in files]}")
 
-    for file_info in files:
-        filename = file_info.get("filename", "")
-        if filename.endswith(".java") and "Test" not in filename:
-            file_url = file_info.get("download_url") or file_info.get("url", "")
-            if file_url:
+        code_parts = []
+        for file_info in files:
+            filename = file_info.get("filename", "")
+            if filename.endswith(".java") and "Test" not in filename:
+                # try download_url first, then url, then filename-based download
+                file_url = (
+                    file_info.get("download_url")
+                    or file_info.get("url")
+                    or f"{EXERCISM_API}/solutions/{uuid}/files/{filename}"
+                )
+                print(f"           → downloading {filename} from {file_url}")
                 fr = requests.get(file_url, headers=headers, timeout=15)
-                if fr.ok:
+                print(f"              HTTP {fr.status_code} | {len(fr.text)} chars")
+                if fr.ok and fr.text.strip():
                     code_parts.append(fr.text)
 
-    return "\n\n".join(code_parts)
+        if code_parts:
+            return "\n\n".join(code_parts)
+
+    # ── Approach B: direct file download by convention ────────────────────────
+    # Exercism stores files at /solutions/{uuid}/files/src/main/java/{PascalSlug}.java
+    pascal = "".join(w.capitalize() for w in slug.split("-"))
+    direct_url = f"{EXERCISM_API}/solutions/{uuid}/files/src/main/java/{pascal}.java"
+    print(f"      🌐  Trying direct: {direct_url}")
+    dr = requests.get(direct_url, headers=headers, timeout=15)
+    print(f"           → HTTP {dr.status_code} | {len(dr.text)} chars")
+    if dr.ok and dr.text.strip():
+        return dr.text
+
+    print(f"      ⚠️  Could not retrieve code for {slug}")
+    return ""
 
 # ── Build table ───────────────────────────────────────────────────────────────
 
@@ -236,10 +252,10 @@ def build_table(solutions: list, headers: dict) -> str:
             concepts = cache[slug]
             print(f"   📦  {title} — cached: {concepts}")
         else:
-            print(f"   🔍  {title} — fetching and scanning code …")
+            print(f"\n   🔍  {title} …")
             code     = fetch_solution_code(sol, headers)
             concepts = detect_concepts(code)
-            print(f"        → {concepts}")
+            print(f"        → detected: {concepts}")
             cache[slug] = concepts
             changed = True
             time.sleep(0.3)
@@ -248,7 +264,7 @@ def build_table(solutions: list, headers: dict) -> str:
 
     if changed:
         save_cache(cache)
-        print("   💾  Cache saved.")
+        print("\n   💾  Cache saved.")
 
     return header + "\n" + "\n".join(rows)
 
@@ -288,7 +304,7 @@ def main():
         print("⚠️   No solutions found — README not changed.")
         return
 
-    print(f"\n🔎  Scanning concepts for {len(solutions)} exercise(s) …\n")
+    print(f"\n🔎  Scanning concepts for {len(solutions)} exercise(s) …")
     table = build_table(solutions, headers)
     update_readme(table)
 
