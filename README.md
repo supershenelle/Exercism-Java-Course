@@ -14,7 +14,7 @@ This repository documents my personal Java learning journey on **Exercism** — 
 
 ## ✅ Completed Exercises
 
-**View Solutions:** [HERE](https://exercism.org/profiles/supershenelle) or alternatively [HERE](https://github.com/supershenelle/Exercism-Java-Course/branches)
+**View Solutions:** [HERE](https://exercism.org/profiles/supershenelle/solutions) or alternatively [HERE](https://github.com/supershenelle/Exercism-Java-Course/branches)
 
 <!-- EXERCISM-START -->
 | # | Exercise | Concepts Practiced |
