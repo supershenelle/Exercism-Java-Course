@@ -1,16 +1,17 @@
 """
 update_readme.py
 ────────────────
-Fetches your completed Exercism Java solutions, downloads each solution's
-actual source code via submission files, scans it for Java concepts using
-keyword/pattern matching, then rewrites the
+Reads your Exercism Java solution files from exercism-sync/{uuid} branches,
+identifies the exercise from the folder structure inside each branch,
+detects Java concepts via pattern matching, then rewrites the
 <!-- EXERCISM-START --> … <!-- EXERCISM-END --> block in README.md.
 
 Requirements
   pip install requests
 
-Environment variables (set as GitHub Actions secrets)
-  EXERCISM_TOKEN – your Exercism API token (exercism.org/settings/api_cli)
+Environment variables (automatically available in GitHub Actions — no setup needed)
+  GITHUB_TOKEN      – auto-injected by GitHub Actions
+  GITHUB_REPOSITORY – auto-set to "owner/repo"
 """
 
 import os
@@ -22,12 +23,12 @@ import requests
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-EXERCISM_API  = "https://exercism.org/api/v2"
-TRACK         = "java"
-README_PATH   = "README.md"
-MARKER_START  = "<!-- EXERCISM-START -->"
-MARKER_END    = "<!-- EXERCISM-END -->"
-CACHE_PATH    = "scripts/.concepts_cache.json"
+TRACK        = "java"
+README_PATH  = "README.md"
+MARKER_START = "<!-- EXERCISM-START -->"
+MARKER_END   = "<!-- EXERCISM-END -->"
+CACHE_PATH   = "scripts/.concepts_cache.json"
+BRANCH_PREFIX = "exercism-sync/"
 
 # ── Concept detection rules ───────────────────────────────────────────────────
 
@@ -85,14 +86,116 @@ def detect_concepts(code: str) -> str:
                 break
     return ", ".join(found[:MAX_CONCEPTS]) if found else "Basic output"
 
-# ── Auth ──────────────────────────────────────────────────────────────────────
+# ── GitHub helpers ────────────────────────────────────────────────────────────
 
-def exercism_headers():
-    token = os.environ.get("EXERCISM_TOKEN", "").strip()
-    if not token:
-        print("❌  EXERCISM_TOKEN is not set.", file=sys.stderr)
+def github_headers():
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    h = {"Accept": "application/vnd.github+json"}
+    if token:
+        h["Authorization"] = f"Bearer {token}"
+    return h
+
+def get_repo():
+    repo = os.environ.get("GITHUB_REPOSITORY", "").strip()
+    if not repo:
+        print("❌  GITHUB_REPOSITORY not set.", file=sys.stderr)
         sys.exit(1)
-    return {"Authorization": f"Bearer {token}"}
+    return repo
+
+# ── List exercism-sync branches ───────────────────────────────────────────────
+
+def list_sync_branches(repo: str, headers: dict) -> list:
+    print("📋  Listing exercism-sync branches …")
+    branches = []
+    url = f"https://api.github.com/repos/{repo}/branches?per_page=100"
+    while url:
+        resp = requests.get(url, headers=headers, timeout=15)
+        if not resp.ok:
+            print(f"   ⚠️  GitHub API HTTP {resp.status_code}: {resp.text[:200]}")
+            break
+        for b in resp.json():
+            name = b.get("name", "")
+            if name.startswith(BRANCH_PREFIX):
+                branches.append(name)
+        link = resp.headers.get("Link", "")
+        url = None
+        for part in link.split(","):
+            if 'rel="next"' in part:
+                url = part.split(";")[0].strip().strip("<>")
+    print(f"   ✅  Found {len(branches)} sync branch(es).")
+    return branches
+
+# ── Read branch contents ──────────────────────────────────────────────────────
+
+def read_branch(repo: str, branch: str, headers: dict) -> tuple:
+    """
+    Returns (slug, title, code) by inspecting the branch's file tree.
+    The Exercism syncer stores files under: java/{exercise-slug}/src/main/java/
+    We find the slug from the folder structure, then read the .java files.
+    """
+    tree_url = f"https://api.github.com/repos/{repo}/git/trees/{branch}?recursive=1"
+    resp = requests.get(tree_url, headers=headers, timeout=15)
+    if not resp.ok:
+        print(f"      ⚠️  tree HTTP {resp.status_code} for {branch}")
+        return None, None, ""
+
+    tree  = resp.json().get("tree", [])
+    paths = [item["path"] for item in tree if item.get("type") == "blob"]
+
+    # Debug: print all paths in first branch to understand structure
+    if len(paths) < 20:  # only print for small trees to avoid log spam
+        print(f"      📁  files: {paths}")
+
+    # Find the exercise slug — look for .java solution files
+    # Exercism syncer path pattern: java/{slug}/src/main/java/{ClassName}.java
+    # or sometimes just: {slug}/src/main/java/{ClassName}.java
+    slug  = None
+    title = None
+
+    for path in paths:
+        parts = path.split("/")
+        # Look for src/main/java in the path to identify exercise root
+        if "src" in parts and "main" in parts and path.endswith(".java"):
+            src_idx = parts.index("src")
+            if src_idx >= 1:
+                # The slug is the folder just before src/
+                slug = parts[src_idx - 1]
+                break
+
+    # Fallback: try reading .exercism/metadata.json which stores exercise info
+    if not slug:
+        for path in paths:
+            if path.endswith("metadata.json") and ".exercism" in path:
+                raw_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{path}"
+                mr = requests.get(raw_url, timeout=15)
+                if mr.ok:
+                    try:
+                        meta = mr.json()
+                        slug = meta.get("exercise", {}).get("slug") or meta.get("exercise_id", "")
+                        title = meta.get("exercise", {}).get("title", "")
+                        print(f"      📋  metadata slug: {slug!r}")
+                    except Exception:
+                        pass
+                break
+
+    if not slug:
+        print(f"      ⚠️  could not determine slug for {branch}")
+        return None, None, ""
+
+    if not title:
+        title = " ".join(w.capitalize() for w in slug.split("-"))
+
+    # Download .java solution files (skip test files)
+    code_parts = []
+    for path in paths:
+        if path.endswith(".java") and "Test" not in path:
+            raw_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{path}"
+            fc = requests.get(raw_url, timeout=15)
+            if fc.ok and fc.text.strip():
+                print(f"      📄  {path} ({len(fc.text)} chars)")
+                code_parts.append(fc.text)
+
+    return slug, title, "\n\n".join(code_parts)
 
 # ── Cache ─────────────────────────────────────────────────────────────────────
 
@@ -110,143 +213,52 @@ def save_cache(cache: dict):
     with open(CACHE_PATH, "w", encoding="utf-8") as f:
         json.dump(cache, f, indent=2)
 
-# ── Fetch solutions ───────────────────────────────────────────────────────────
-
-def fetch_solutions(headers: dict) -> list:
-    print("📥  Fetching your Exercism solutions …")
-    solutions = []
-
-    url = f"{EXERCISM_API}/solutions?track_slug={TRACK}"
-    while url:
-        resp = requests.get(url, headers=headers, timeout=15)
-        if resp.status_code == 401:
-            print("❌  Invalid or expired EXERCISM_TOKEN.", file=sys.stderr)
-            sys.exit(1)
-        if not resp.ok:
-            print(f"   ⚠️  HTTP {resp.status_code}")
-            break
-        data = resp.json()
-        for sol in data.get("solutions", []):
-            if sol.get("status") in ("published", "completed", "iterated", "started"):
-                solutions.append(sol)
-                print(f"        ✔ {sol.get('exercise',{}).get('slug','?')} ({sol.get('status')})")
-        url = data.get("meta", {}).get("links", {}).get("next")
-
-    if not solutions:
-        print("   ⚠️  Trying sideload fallback …")
-        r2 = requests.get(
-            f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions",
-            headers=headers, timeout=15
-        )
-        if r2.ok:
-            for sol in r2.json().get("solutions", []):
-                if sol.get("status") in ("published", "completed", "iterated", "started"):
-                    solutions.append(sol)
-
-    solutions.sort(key=lambda s: s.get("submitted_at") or s.get("created_at") or "")
-    print(f"   ✅  {len(solutions)} solution(s) found.")
-    return solutions
-
-# ── Fetch solution source code via submission_uuid ────────────────────────────
-
-def fetch_solution_code(solution: dict, headers: dict) -> str:
-    """
-    Correct approach (confirmed from API debug):
-      1. GET /solutions/{uuid}?sideload[]=iterations
-      2. Take latest iteration's submission_uuid
-      3. GET /submissions/{submission_uuid}/files  → file listing
-      4. Download each .java file (skip test files)
-    """
-    uuid = solution.get("uuid", "")
-    slug = solution.get("exercise", {}).get("slug", "?")
-
-    if not uuid:
-        return ""
-
-    # Step 1: get iterations
-    detail_url = f"{EXERCISM_API}/solutions/{uuid}?sideload[]=iterations"
-    resp = requests.get(detail_url, headers=headers, timeout=15)
-    if not resp.ok:
-        print(f"      ⚠️  HTTP {resp.status_code} fetching solution detail")
-        return ""
-
-    iterations = resp.json().get("iterations", [])
-    if not iterations:
-        print(f"      ⚠️  no iterations for {slug}")
-        return ""
-
-    # Step 2: get submission_uuid from latest iteration
-    latest          = iterations[-1]
-    submission_uuid = latest.get("submission_uuid", "")
-    print(f"      🔑  submission_uuid = {submission_uuid!r}")
-
-    if not submission_uuid:
-        print(f"      ⚠️  no submission_uuid in iteration")
-        return ""
-
-    # Step 3: fetch the file listing for this submission
-    files_url = f"{EXERCISM_API}/submissions/{submission_uuid}/files"
-    print(f"      🌐  GET {files_url}")
-    fr = requests.get(files_url, headers=headers, timeout=15)
-    print(f"           → HTTP {fr.status_code}")
-    if not fr.ok:
-        return ""
-
-    files      = fr.json().get("files", [])
-    print(f"           → {len(files)} file(s): {[f.get('filename','?') for f in files]}")
-
-    # Step 4: download each solution .java file
-    code_parts = []
-    for file_info in files:
-        filename = file_info.get("filename", "")
-        if filename.endswith(".java") and "Test" not in filename:
-            file_url = file_info.get("url") or file_info.get("download_url", "")
-            if file_url:
-                fc = requests.get(file_url, headers=headers, timeout=15)
-                print(f"           📄 {filename} → HTTP {fc.status_code} | {len(fc.text)} chars")
-                if fc.ok and fc.text.strip():
-                    code_parts.append(fc.text)
-
-    return "\n\n".join(code_parts)
-
 # ── Build table ───────────────────────────────────────────────────────────────
 
-def humanize(slug: str) -> str:
-    return " ".join(w.capitalize() for w in slug.split("-"))
-
-def build_table(solutions: list, headers: dict) -> str:
+def build_table(branches: list, repo: str, gh_headers: dict) -> str:
     cache   = load_cache()
     changed = False
+
+    # slug -> (title, concepts)
+    exercises = {}
+
+    for branch in branches:
+        print(f"\n   🔍  {branch} …")
+        slug, title, code = read_branch(repo, branch, gh_headers)
+        if not slug:
+            continue
+
+        if slug in cache:
+            exercises[slug] = (title, cache[slug])
+            print(f"        📦  {title} — cached: {cache[slug]}")
+        else:
+            concepts = detect_concepts(code)
+            cache[slug] = concepts
+            exercises[slug] = (title, concepts)
+            changed = True
+            print(f"        → {concepts}")
+
+        time.sleep(0.3)
+
+    if changed:
+        save_cache(cache)
+        print("\n   💾  Cache saved.")
+
+    if not exercises:
+        return (
+            "| # | Exercise | Concepts Used |\n"
+            "|---|----------|---------------|\n"
+            "| — | No exercises found | — |"
+        )
 
     header = (
         "| # | Exercise | Concepts Used |\n"
         "|---|----------|---------------|"
     )
     rows = []
-
-    for i, sol in enumerate(solutions, start=1):
-        ex    = sol.get("exercise", {})
-        slug  = ex.get("slug", "")
-        title = ex.get("title", humanize(slug))
-        url   = f"https://exercism.org/tracks/java/exercises/{slug}"
-
-        if slug in cache:
-            concepts = cache[slug]
-            print(f"   📦  {title} — cached: {concepts}")
-        else:
-            print(f"\n   🔍  {title} …")
-            code     = fetch_solution_code(sol, headers)
-            concepts = detect_concepts(code)
-            print(f"        → {concepts}")
-            cache[slug] = concepts
-            changed = True
-            time.sleep(0.5)
-
+    for i, (slug, (title, concepts)) in enumerate(sorted(exercises.items()), start=1):
+        url = f"https://exercism.org/tracks/{TRACK}/exercises/{slug}"
         rows.append(f"| {i} | [{title}]({url}) | {concepts} |")
-
-    if changed:
-        save_cache(cache)
-        print("\n   💾  Cache saved.")
 
     return header + "\n" + "\n".join(rows)
 
@@ -279,15 +291,16 @@ def update_readme(table: str):
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    headers   = exercism_headers()
-    solutions = fetch_solutions(headers)
+    repo     = get_repo()
+    gh_hdrs  = github_headers()
+    branches = list_sync_branches(repo, gh_hdrs)
 
-    if not solutions:
-        print("⚠️   No solutions found — README not changed.")
+    if not branches:
+        print("⚠️   No exercism-sync/* branches found.")
         return
 
-    print(f"\n🔎  Scanning {len(solutions)} exercise(s) …")
-    table = build_table(solutions, headers)
+    print(f"\n🔎  Reading {len(branches)} branch(es) …")
+    table = build_table(branches, repo, gh_hdrs)
     update_readme(table)
 
 if __name__ == "__main__":
