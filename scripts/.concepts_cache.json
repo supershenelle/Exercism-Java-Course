@@ -1,5 +1,6 @@
 {
   "annalyns-infiltration": "Basic output",
+  "football-match-reports": "Switch statement",
   "armstrong-numbers": "For loop, While loop, Math class, Type casting, Integers",
   "jedliks-toy-car": "Access modifiers, If/else, Integers",
   "salary-calculator": "Ternary operator",
@@ -9,6 +10,7 @@
   "two-fer": "If/else",
   "leap": "Basic output",
   "resistor-color": "Access modifiers, For loop, If/else, Arrays, Constants",
+  "captains-log": "Access modifiers, Char operations, Arrays, Constants",
   "lasagna": "Integers",
   "bird-watcher": "Constructors, Access modifiers, For loop, If/else, Arrays",
   "secrets": "Basic output",
