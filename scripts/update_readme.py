@@ -1,6 +1,10 @@
 """
 update_readme.py
 ────────────────
+Fetches your completed Exercism Java solutions, downloads each solution's
+actual source code via submission files, scans it for Java concepts using
+keyword/pattern matching, then rewrites the
+<!-- EXERCISM-START --> … <!-- EXERCISM-END --> block in README.md.
 
 Requirements
   pip install requests
