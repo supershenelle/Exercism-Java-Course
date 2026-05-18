@@ -1,6 +1,9 @@
 """
 update_readme.py
 ────────────────
+Fetches your completed Exercism Java solutions, downloads each solution's
+actual source code, scans it for Java concepts using keyword/pattern matching,
+then rewrites the <!-- EXERCISM-START --> … <!-- EXERCISM-END --> block in README.md.
 
 Requirements
   pip install requests
@@ -28,7 +31,6 @@ CACHE_PATH    = "scripts/.concepts_cache.json"
 # ── Concept detection rules ───────────────────────────────────────────────────
 
 CONCEPT_RULES = [
-    # OOP
     ("Classes",             [r"\bclass\b"]),
     ("Inheritance",         [r"\bextends\b"]),
     ("Interfaces",          [r"\bimplements\b", r"\binterface\b"]),
@@ -38,7 +40,6 @@ CONCEPT_RULES = [
     ("Enums",               [r"\benum\b"]),
     ("Abstract classes",    [r"\babstract\b"]),
     ("Generics",            [r"<[A-Z]\w*>"]),
-    # Control flow
     ("If/else",             [r"\bif\s*\(", r"\belse\b"]),
     ("Switch statement",    [r"\bswitch\s*\("]),
     ("For loop",            [r"\bfor\s*\("]),
@@ -46,33 +47,26 @@ CONCEPT_RULES = [
     ("Do-while loop",       [r"\bdo\s*\{"]),
     ("Ternary operator",    [r"\?[^:\n]+:"]),
     ("Break/continue",      [r"\b(break|continue)\b"]),
-    # Data types
     ("Booleans",            [r"\bboolean\b"]),
     ("Integers",            [r"\b(int|long|short|byte)\b"]),
     ("Doubles/floats",      [r"\b(double|float)\b"]),
     ("Constants",           [r"\bfinal\b"]),
     ("Type casting",        [r"\([a-z]+\)\s*\w"]),
     ("Null checks",         [r"\bnull\b"]),
-    # Strings
     ("String methods",      [r"\.(toUpperCase|toLowerCase|substring|indexOf|contains|replace|split|trim|startsWith|endsWith|charAt|length)\s*\("]),
     ("String concatenation",[r'"\s*\+']),
     ("String formatting",   [r"String\.format\s*\(", r"\.formatted\s*\("]),
     ("StringBuilder",       [r"\bStringBuilder\b"]),
     ("Char operations",     [r"\bchar\b"]),
-    # Math
     ("Math class",          [r"\bMath\."]),
-    # Arrays
     ("Arrays",              [r"\w+\s*\[\]", r"\bArrays\."]),
-    # Collections
     ("ArrayList",           [r"\bArrayList\b"]),
     ("HashMap",             [r"\bHashMap\b"]),
     ("HashSet",             [r"\bHashSet\b"]),
     ("Collections API",     [r"\bCollections\."]),
-    # Functional
     ("Lambda expressions",  [r"->"]),
     ("Streams API",         [r"\.stream\(\)"]),
     ("Optional",            [r"\bOptional\b"]),
-    # Exceptions
     ("Try/catch",           [r"\btry\s*\{", r"\bcatch\s*\("]),
     ("Throws",              [r"\bthrows\b"]),
 ]
@@ -121,7 +115,6 @@ def fetch_solutions(headers: dict) -> list:
     print("📥  Fetching your Exercism solutions …")
     solutions = []
 
-    # Paginate through /api/v2/solutions (no track filter — get all, filter below)
     url = f"{EXERCISM_API}/solutions?track_slug={TRACK}"
     while url:
         resp = requests.get(url, headers=headers, timeout=15)
@@ -129,87 +122,95 @@ def fetch_solutions(headers: dict) -> list:
             print("❌  Invalid or expired EXERCISM_TOKEN.", file=sys.stderr)
             sys.exit(1)
         if not resp.ok:
-            print(f"   ⚠️  Got HTTP {resp.status_code} from {url}")
+            print(f"   ⚠️  HTTP {resp.status_code}")
             break
-
         data = resp.json()
         for sol in data.get("solutions", []):
             status = sol.get("status", "")
             slug   = sol.get("exercise", {}).get("slug", "?")
-            uuid   = sol.get("uuid", "")
-            print(f"        {slug} → status={status!r} uuid={uuid}")
             if status in ("published", "completed", "iterated", "started"):
                 solutions.append(sol)
-
-        # Follow pagination
+                print(f"        ✔ {slug} ({status})")
         url = data.get("meta", {}).get("links", {}).get("next")
 
-    # Also try the sideload endpoint as a second source
+    # fallback
     if not solutions:
-        print("   ⚠️  /solutions returned 0, trying sideload endpoint …")
-        url2 = f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions"
-        resp2 = requests.get(url2, headers=headers, timeout=15)
-        if resp2.ok:
-            data2 = resp2.json()
-            for sol in data2.get("solutions", []):
-                status = sol.get("status", "")
-                slug   = sol.get("exercise", {}).get("slug", "?")
-                uuid   = sol.get("uuid", "")
-                print(f"        {slug} → status={status!r} uuid={uuid}")
-                if status in ("published", "completed", "iterated", "started"):
+        print("   ⚠️  Trying sideload fallback …")
+        r2 = requests.get(f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions", headers=headers, timeout=15)
+        if r2.ok:
+            for sol in r2.json().get("solutions", []):
+                if sol.get("status") in ("published", "completed", "iterated", "started"):
                     solutions.append(sol)
 
     solutions.sort(key=lambda s: s.get("submitted_at") or s.get("created_at") or "")
-    print(f"   ✅  Found {len(solutions)} solution(s).")
+    print(f"   ✅  {len(solutions)} solution(s) found.")
     return solutions
 
-# ── Fetch solution source code via iterations sideload ────────────────────────
+# ── Fetch solution source code ────────────────────────────────────────────────
 
 def fetch_solution_code(solution: dict, headers: dict) -> str:
-    """
-    Uses the correct Exercism API pattern:
-      GET /api/v2/solutions/{uuid}?sideload[]=iterations
-    then follows the links in the latest iteration to download files.
-    """
-    uuid  = solution.get("uuid", "")
-    slug  = solution.get("exercise", {}).get("slug", "?")
+    uuid = solution.get("uuid", "")
+    slug = solution.get("exercise", {}).get("slug", "?")
 
     if not uuid:
-        print(f"      ⚠️  No UUID for {slug}")
         return ""
 
-    # Step 1: get solution detail with iterations sideloaded
+    # Step 1 — get solution detail with iterations sideloaded
     detail_url = f"{EXERCISM_API}/solutions/{uuid}?sideload[]=iterations"
     resp = requests.get(detail_url, headers=headers, timeout=15)
-    print(f"      🌐  {detail_url} → HTTP {resp.status_code}")
     if not resp.ok:
+        print(f"      ⚠️  detail fetch failed: HTTP {resp.status_code}")
         return ""
 
     data       = resp.json()
     iterations = data.get("iterations", [])
-    print(f"           {len(iterations)} iteration(s) found")
 
     if not iterations:
+        print(f"      ⚠️  no iterations found")
         return ""
 
-    # Step 2: get the latest iteration's files_url
-    latest     = iterations[-1]
-    files_url  = latest.get("files_url", "")
-    print(f"           files_url = {files_url!r}")
+    # DEBUG: print the full latest iteration object so we can see all fields
+    latest = iterations[-1]
+    print(f"      🔑  iteration keys: {list(latest.keys())}")
+    print(f"      🔑  iteration data: {json.dumps(latest, indent=8)[:600]}")
+
+    # Step 2 — try every plausible field name for the files URL
+    files_url = (
+        latest.get("files_url")
+        or latest.get("download_url")
+        or latest.get("submission_url")
+        or ""
+    )
+
+    # Step 3 — if no URL field, try building it from the solution's
+    #           file_download_base_url (old v1 style still present in v2)
+    if not files_url:
+        base = data.get("solution", {}).get("file_download_base_url", "")
+        print(f"      ℹ️  file_download_base_url = {base!r}")
+        sol_files = data.get("solution", {}).get("files", [])
+        print(f"      ℹ️  solution.files = {sol_files}")
+        if base and sol_files:
+            code_parts = []
+            for f in sol_files:
+                if f.endswith(".java") and "Test" not in f:
+                    fc = requests.get(base + f, headers=headers, timeout=15)
+                    print(f"      📄  {f} → HTTP {fc.status_code} | {len(fc.text)} chars")
+                    if fc.ok and fc.text.strip():
+                        code_parts.append(fc.text)
+            if code_parts:
+                return "\n\n".join(code_parts)
 
     if not files_url:
+        print(f"      ⚠️  no files URL found anywhere")
         return ""
 
-    # Step 3: fetch the file listing
+    # Step 4 — fetch file listing from files_url
     fr = requests.get(files_url, headers=headers, timeout=15)
     print(f"      🌐  files listing → HTTP {fr.status_code}")
     if not fr.ok:
         return ""
 
     files      = fr.json().get("files", [])
-    print(f"           {len(files)} file(s): {[f.get('filename','?') for f in files]}")
-
-    # Step 4: download each .java solution file (skip test files)
     code_parts = []
     for file_info in files:
         filename = file_info.get("filename", "")
@@ -217,7 +218,6 @@ def fetch_solution_code(solution: dict, headers: dict) -> str:
             file_url = file_info.get("url") or file_info.get("download_url", "")
             if file_url:
                 fc = requests.get(file_url, headers=headers, timeout=15)
-                print(f"           {filename} → HTTP {fc.status_code} | {len(fc.text)} chars")
                 if fc.ok and fc.text.strip():
                     code_parts.append(fc.text)
 
@@ -251,10 +251,10 @@ def build_table(solutions: list, headers: dict) -> str:
             print(f"\n   🔍  {title} …")
             code     = fetch_solution_code(sol, headers)
             concepts = detect_concepts(code)
-            print(f"        → detected: {concepts}")
+            print(f"        → {concepts}")
             cache[slug] = concepts
             changed = True
-            time.sleep(0.5)  # be gentle with the API
+            time.sleep(0.5)
 
         rows.append(f"| {i} | [{title}]({url}) | {concepts} |")
 
@@ -300,7 +300,7 @@ def main():
         print("⚠️   No solutions found — README not changed.")
         return
 
-    print(f"\n🔎  Scanning concepts for {len(solutions)} exercise(s) …")
+    print(f"\n🔎  Scanning {len(solutions)} exercise(s) …")
     table = build_table(solutions, headers)
     update_readme(table)
 
