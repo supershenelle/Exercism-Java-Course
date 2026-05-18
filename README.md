@@ -19,22 +19,8 @@ This repository documents my personal Java learning journey on **Exercism** — 
 <!-- EXERCISM-START -->
 | # | Exercise | Concepts Used |
 |---|----------|---------------|
-| 1 | [Hello World](https://exercism.org/tracks/java/exercises/hello-world) | — |
-| 2 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | — |
-| 3 | [Darts](https://exercism.org/tracks/java/exercises/darts) | — |
-| 4 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | — |
-| 5 | [Leap](https://exercism.org/tracks/java/exercises/leap) | — |
-| 6 | [Say](https://exercism.org/tracks/java/exercises/say) | — |
-| 7 | [Cook Your Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | — |
-| 8 | [Annalyn's Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | — |
-| 9 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | — |
-| 10 | [Jedlik's Toy Car](https://exercism.org/tracks/java/exercises/jedliks-toy-car) | — |
-| 11 | [Cars, Assemble!](https://exercism.org/tracks/java/exercises/cars-assemble) | — |
-| 12 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | — |
-| 13 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | — |
-| 14 | [Tim from Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | — |
-| 15 | [Booking Up For Beauty](https://exercism.org/tracks/java/exercises/booking-up-for-beauty) | — |
-| 16 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | — |
+| 1 | [1](https://exercism.org/tracks/java/exercises/1) | Classes, Access modifiers, Static members, If/else, Integers, String concatenation |
+| 2 | [2](https://exercism.org/tracks/java/exercises/2) | Classes, Static members, Booleans |
 <!-- EXERCISM-END -->
 
 > 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*
