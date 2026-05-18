@@ -33,6 +33,8 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 12 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | — |
 | 13 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | — |
 | 14 | [Tim from Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | — |
+| 15 | [Booking Up For Beauty](https://exercism.org/tracks/java/exercises/booking-up-for-beauty) | — |
+| 16 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | — |
 <!-- EXERCISM-END -->
 
 > 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*
