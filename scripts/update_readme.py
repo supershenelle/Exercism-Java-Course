@@ -1,9 +1,6 @@
 """
 update_readme.py
 ────────────────
-Fetches your completed Exercism Java solutions, downloads each solution's
-actual source code, scans it for Java concepts using keyword/pattern matching,
-then rewrites the <!-- EXERCISM-START --> … <!-- EXERCISM-END --> block in README.md.
 
 Requirements
   pip install requests
@@ -126,17 +123,17 @@ def fetch_solutions(headers: dict) -> list:
             break
         data = resp.json()
         for sol in data.get("solutions", []):
-            status = sol.get("status", "")
-            slug   = sol.get("exercise", {}).get("slug", "?")
-            if status in ("published", "completed", "iterated", "started"):
+            if sol.get("status") in ("published", "completed", "iterated", "started"):
                 solutions.append(sol)
-                print(f"        ✔ {slug} ({status})")
+                print(f"        ✔ {sol.get('exercise',{}).get('slug','?')} ({sol.get('status')})")
         url = data.get("meta", {}).get("links", {}).get("next")
 
-    # fallback
     if not solutions:
         print("   ⚠️  Trying sideload fallback …")
-        r2 = requests.get(f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions", headers=headers, timeout=15)
+        r2 = requests.get(
+            f"{EXERCISM_API}/tracks/{TRACK}/exercises?sideload[]=solutions",
+            headers=headers, timeout=15
+        )
         if r2.ok:
             for sol in r2.json().get("solutions", []):
                 if sol.get("status") in ("published", "completed", "iterated", "started"):
@@ -146,71 +143,55 @@ def fetch_solutions(headers: dict) -> list:
     print(f"   ✅  {len(solutions)} solution(s) found.")
     return solutions
 
-# ── Fetch solution source code ────────────────────────────────────────────────
+# ── Fetch solution source code via submission_uuid ────────────────────────────
 
 def fetch_solution_code(solution: dict, headers: dict) -> str:
+    """
+    Correct approach (confirmed from API debug):
+      1. GET /solutions/{uuid}?sideload[]=iterations
+      2. Take latest iteration's submission_uuid
+      3. GET /submissions/{submission_uuid}/files  → file listing
+      4. Download each .java file (skip test files)
+    """
     uuid = solution.get("uuid", "")
     slug = solution.get("exercise", {}).get("slug", "?")
 
     if not uuid:
         return ""
 
-    # Step 1 — get solution detail with iterations sideloaded
+    # Step 1: get iterations
     detail_url = f"{EXERCISM_API}/solutions/{uuid}?sideload[]=iterations"
     resp = requests.get(detail_url, headers=headers, timeout=15)
     if not resp.ok:
-        print(f"      ⚠️  detail fetch failed: HTTP {resp.status_code}")
+        print(f"      ⚠️  HTTP {resp.status_code} fetching solution detail")
         return ""
 
-    data       = resp.json()
-    iterations = data.get("iterations", [])
-
+    iterations = resp.json().get("iterations", [])
     if not iterations:
-        print(f"      ⚠️  no iterations found")
+        print(f"      ⚠️  no iterations for {slug}")
         return ""
 
-    # DEBUG: print the full latest iteration object so we can see all fields
-    latest = iterations[-1]
-    print(f"      🔑  iteration keys: {list(latest.keys())}")
-    print(f"      🔑  iteration data: {json.dumps(latest, indent=8)[:600]}")
+    # Step 2: get submission_uuid from latest iteration
+    latest          = iterations[-1]
+    submission_uuid = latest.get("submission_uuid", "")
+    print(f"      🔑  submission_uuid = {submission_uuid!r}")
 
-    # Step 2 — try every plausible field name for the files URL
-    files_url = (
-        latest.get("files_url")
-        or latest.get("download_url")
-        or latest.get("submission_url")
-        or ""
-    )
-
-    # Step 3 — if no URL field, try building it from the solution's
-    #           file_download_base_url (old v1 style still present in v2)
-    if not files_url:
-        base = data.get("solution", {}).get("file_download_base_url", "")
-        print(f"      ℹ️  file_download_base_url = {base!r}")
-        sol_files = data.get("solution", {}).get("files", [])
-        print(f"      ℹ️  solution.files = {sol_files}")
-        if base and sol_files:
-            code_parts = []
-            for f in sol_files:
-                if f.endswith(".java") and "Test" not in f:
-                    fc = requests.get(base + f, headers=headers, timeout=15)
-                    print(f"      📄  {f} → HTTP {fc.status_code} | {len(fc.text)} chars")
-                    if fc.ok and fc.text.strip():
-                        code_parts.append(fc.text)
-            if code_parts:
-                return "\n\n".join(code_parts)
-
-    if not files_url:
-        print(f"      ⚠️  no files URL found anywhere")
+    if not submission_uuid:
+        print(f"      ⚠️  no submission_uuid in iteration")
         return ""
 
-    # Step 4 — fetch file listing from files_url
+    # Step 3: fetch the file listing for this submission
+    files_url = f"{EXERCISM_API}/submissions/{submission_uuid}/files"
+    print(f"      🌐  GET {files_url}")
     fr = requests.get(files_url, headers=headers, timeout=15)
-    print(f"      🌐  files listing → HTTP {fr.status_code}")
+    print(f"           → HTTP {fr.status_code}")
     if not fr.ok:
         return ""
 
     files      = fr.json().get("files", [])
+    print(f"           → {len(files)} file(s): {[f.get('filename','?') for f in files]}")
+
+    # Step 4: download each solution .java file
     code_parts = []
     for file_info in files:
         filename = file_info.get("filename", "")
@@ -218,6 +199,7 @@ def fetch_solution_code(solution: dict, headers: dict) -> str:
             file_url = file_info.get("url") or file_info.get("download_url", "")
             if file_url:
                 fc = requests.get(file_url, headers=headers, timeout=15)
+                print(f"           📄 {filename} → HTTP {fc.status_code} | {len(fc.text)} chars")
                 if fc.ok and fc.text.strip():
                     code_parts.append(fc.text)
 
