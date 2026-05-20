@@ -35,7 +35,7 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 14 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
 | 15 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
 | 16 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
-| 17 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output, Bit operations |
+| 17 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
 | 18 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
 | 19 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
 <!-- EXERCISM-END -->
