@@ -19,23 +19,25 @@ This repository documents my personal Java learning journey on **Exercism** — 
 <!-- EXERCISM-START -->
 | # | Exercise | Concepts Used |
 |---|----------|---------------|
-| 1 | [Annalyns Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | Basic output |
-| 2 | [Armstrong Numbers](https://exercism.org/tracks/java/exercises/armstrong-numbers) | For loop, While loop, Math class, Type casting, Integers |
-| 3 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Constructors, Access modifiers, For loop, If/else, Arrays |
-| 4 | [Captains Log](https://exercism.org/tracks/java/exercises/captains-log) | Access modifiers, Char operations, Arrays, Constants |
-| 5 | [Cars Assemble](https://exercism.org/tracks/java/exercises/cars-assemble) | If/else, Type casting, Doubles/floats, Integers |
-| 6 | [Darts](https://exercism.org/tracks/java/exercises/darts) | If/else, Math class, Doubles/floats |
-| 7 | [Football Match Reports](https://exercism.org/tracks/java/exercises/football-match-reports) | Switch statement |
-| 8 | [Jedliks Toy Car](https://exercism.org/tracks/java/exercises/jedliks-toy-car) | Access modifiers, If/else, Integers |
-| 9 | [Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | Integers |
-| 10 | [Leap](https://exercism.org/tracks/java/exercises/leap) | Basic output |
-| 11 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | String methods, Integers |
-| 12 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
-| 13 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
-| 14 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
-| 15 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
-| 16 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
-| 17 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
+| 1 | [Acronym](https://exercism.org/tracks/java/exercises/acronym) | Access modifiers, For loop, If/else, String methods, Char operations |
+| 2 | [Annalyns Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | Basic output |
+| 3 | [Armstrong Numbers](https://exercism.org/tracks/java/exercises/armstrong-numbers) | For loop, While loop, Math class, Type casting, Integers |
+| 4 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Constructors, Access modifiers, For loop, If/else, Arrays |
+| 5 | [Captains Log](https://exercism.org/tracks/java/exercises/captains-log) | Access modifiers, Char operations, Arrays, Constants |
+| 6 | [Cars Assemble](https://exercism.org/tracks/java/exercises/cars-assemble) | If/else, Type casting, Doubles/floats, Integers |
+| 7 | [Darts](https://exercism.org/tracks/java/exercises/darts) | If/else, Math class, Doubles/floats |
+| 8 | [Football Match Reports](https://exercism.org/tracks/java/exercises/football-match-reports) | Switch statement |
+| 9 | [Jedliks Toy Car](https://exercism.org/tracks/java/exercises/jedliks-toy-car) | Access modifiers, If/else, Integers |
+| 10 | [Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | Integers |
+| 11 | [Leap](https://exercism.org/tracks/java/exercises/leap) | Basic output |
+| 12 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | String methods, Integers |
+| 13 | [Raindrops](https://exercism.org/tracks/java/exercises/raindrops) | If/else |
+| 14 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
+| 15 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
+| 16 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
+| 17 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
+| 18 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
+| 19 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
 <!-- EXERCISM-END -->
 
 > 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*
