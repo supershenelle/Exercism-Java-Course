@@ -15,6 +15,7 @@
   "lasagna": "Integers",
   "bird-watcher": "Constructors, Access modifiers, For loop, If/else, Arrays",
   "acronym": "Access modifiers, For loop, If/else, String methods, Char operations",
+  "squeaky-clean": "Switch statement, If/else, StringBuilder, String methods, Char operations",
   "secrets": "Basic output",
   "darts": "If/else, Math class, Doubles/floats",
   "say": "Access modifiers, If/else, Arrays, Type casting, Constants"
