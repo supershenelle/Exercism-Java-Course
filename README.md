@@ -20,10 +20,10 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | # | Exercise | Concepts Used |
 |---|----------|---------------|
 | 1 | [Acronym](https://exercism.org/tracks/java/exercises/acronym) | Access modifiers, For loop, If/else, String methods, Char operations |
-| 2 | [Annalyns Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | Boolean operations, return statements |
+| 2 | [Annalyns Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | Basic output |
 | 3 | [Armstrong Numbers](https://exercism.org/tracks/java/exercises/armstrong-numbers) | For loop, While loop, Math class, Type casting, Integers |
 | 4 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Constructors, Access modifiers, For loop, If/else, Arrays |
-| 5 | [Booking Up For Beauty](https://exercism.org/tracks/java/exercises/booking-up-for-beauty) | Date-time, Local Date Time formatting |
+| 5 | [Booking Up For Beauty](https://exercism.org/tracks/java/exercises/booking-up-for-beauty) | Basic output |
 | 6 | [Captains Log](https://exercism.org/tracks/java/exercises/captains-log) | Access modifiers, Char operations, Arrays, Constants |
 | 7 | [Cars Assemble](https://exercism.org/tracks/java/exercises/cars-assemble) | If/else, Type casting, Doubles/floats, Integers |
 | 8 | [Darts](https://exercism.org/tracks/java/exercises/darts) | If/else, Math class, Doubles/floats |
@@ -36,7 +36,7 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 15 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
 | 16 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
 | 17 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
-| 18 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Bit manipulation |
+| 18 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
 | 19 | [Squeaky Clean](https://exercism.org/tracks/java/exercises/squeaky-clean) | Switch statement, If/else, StringBuilder, String methods, Char operations |
 | 20 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
 | 21 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
