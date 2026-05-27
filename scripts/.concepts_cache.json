@@ -7,5 +7,17 @@
   "salary-calculator": "Ternary operator",
   "cars-assemble": "If/else, Type casting, Doubles/floats, Integers",
   "raindrops": "If/else",
-  "tim-from-marketing": "If/else, String methods, Null checks"
+  "tim-from-marketing": "If/else, String methods, Null checks",
+  "log-levels": "String methods, Integers",
+  "two-fer": "If/else",
+  "leap": "Basic output",
+  "resistor-color": "Access modifiers, For loop, If/else, Arrays, Constants",
+  "captains-log": "Access modifiers, Char operations, Arrays, Constants",
+  "lasagna": "Integers",
+  "bird-watcher": "Constructors, Access modifiers, For loop, If/else, Arrays",
+  "acronym": "Access modifiers, For loop, If/else, String methods, Char operations",
+  "squeaky-clean": "Switch statement, If/else, StringBuilder, String methods, Char operations",
+  "secrets": "Basic output",
+  "darts": "If/else, Math class, Doubles/floats",
+  "say": "Access modifiers, If/else, Arrays, Type casting, Constants"
 }
