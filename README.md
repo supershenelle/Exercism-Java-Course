@@ -24,25 +24,26 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 3 | [Armstrong Numbers](https://exercism.org/tracks/java/exercises/armstrong-numbers) | For loop, While loop, Math class, Type casting, Integers |
 | 4 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Constructors, Access modifiers, For loop, If/else, Arrays |
 | 5 | [Booking Up For Beauty](https://exercism.org/tracks/java/exercises/booking-up-for-beauty) | Basic output |
-| 6 | [Captains Log](https://exercism.org/tracks/java/exercises/captains-log) | Access modifiers, Char operations, Arrays, Constants |
-| 7 | [Cars Assemble](https://exercism.org/tracks/java/exercises/cars-assemble) | If/else, Type casting, Doubles/floats, Integers |
-| 8 | [Darts](https://exercism.org/tracks/java/exercises/darts) | If/else, Math class, Doubles/floats |
-| 9 | [Football Match Reports](https://exercism.org/tracks/java/exercises/football-match-reports) | Switch statement |
-| 10 | [Jedliks Toy Car](https://exercism.org/tracks/java/exercises/jedliks-toy-car) | Access modifiers, If/else, Integers |
-| 11 | [Karls Languages](https://exercism.org/tracks/java/exercises/karls-languages) | Generics, ArrayList, Access modifiers, String methods |
-| 12 | [Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | Integers |
-| 13 | [Leap](https://exercism.org/tracks/java/exercises/leap) | Basic output |
-| 14 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | String methods, Integers |
-| 15 | [Need For Speed](https://exercism.org/tracks/java/exercises/need-for-speed) | Constructors, Access modifiers, While loop, If/else, Integers |
-| 16 | [Raindrops](https://exercism.org/tracks/java/exercises/raindrops) | If/else |
-| 17 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
-| 18 | [Reverse String](https://exercism.org/tracks/java/exercises/reverse-string) | StringBuilder |
-| 19 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
-| 20 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
-| 21 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
-| 22 | [Squeaky Clean](https://exercism.org/tracks/java/exercises/squeaky-clean) | Switch statement, If/else, StringBuilder, String methods, Char operations |
-| 23 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
-| 24 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
+| 6 | [Calculator Conundrum](https://exercism.org/tracks/java/exercises/calculator-conundrum) | Lambda expressions, Switch statement, If/else, Null checks, Integers |
+| 7 | [Captains Log](https://exercism.org/tracks/java/exercises/captains-log) | Access modifiers, Char operations, Arrays, Constants |
+| 8 | [Cars Assemble](https://exercism.org/tracks/java/exercises/cars-assemble) | If/else, Type casting, Doubles/floats, Integers |
+| 9 | [Darts](https://exercism.org/tracks/java/exercises/darts) | If/else, Math class, Doubles/floats |
+| 10 | [Football Match Reports](https://exercism.org/tracks/java/exercises/football-match-reports) | Switch statement |
+| 11 | [Jedliks Toy Car](https://exercism.org/tracks/java/exercises/jedliks-toy-car) | Access modifiers, If/else, Integers |
+| 12 | [Karls Languages](https://exercism.org/tracks/java/exercises/karls-languages) | Generics, ArrayList, Access modifiers, String methods |
+| 13 | [Lasagna](https://exercism.org/tracks/java/exercises/lasagna) | Integers |
+| 14 | [Leap](https://exercism.org/tracks/java/exercises/leap) | Basic output |
+| 15 | [Log Levels](https://exercism.org/tracks/java/exercises/log-levels) | String methods, Integers |
+| 16 | [Need For Speed](https://exercism.org/tracks/java/exercises/need-for-speed) | Constructors, Access modifiers, While loop, If/else, Integers |
+| 17 | [Raindrops](https://exercism.org/tracks/java/exercises/raindrops) | If/else |
+| 18 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
+| 19 | [Reverse String](https://exercism.org/tracks/java/exercises/reverse-string) | StringBuilder |
+| 20 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
+| 21 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
+| 22 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
+| 23 | [Squeaky Clean](https://exercism.org/tracks/java/exercises/squeaky-clean) | Switch statement, If/else, StringBuilder, String methods, Char operations |
+| 24 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
+| 25 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
 <!-- EXERCISM-END -->
 
 > 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*

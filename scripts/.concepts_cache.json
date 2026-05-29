@@ -12,6 +12,7 @@
   "log-levels": "String methods, Integers",
   "two-fer": "If/else",
   "leap": "Basic output",
+  "calculator-conundrum": "Lambda expressions, Switch statement, If/else, Null checks, Integers",
   "need-for-speed": "Constructors, Access modifiers, While loop, If/else, Integers",
   "reverse-string": "StringBuilder",
   "resistor-color": "Access modifiers, For loop, If/else, Arrays, Constants",
