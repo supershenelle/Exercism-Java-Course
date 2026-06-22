@@ -44,6 +44,7 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 23 | [Squeaky Clean](https://exercism.org/tracks/java/exercises/squeaky-clean) | Switch statement, If/else, StringBuilder, String methods, Char operations |
 | 24 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
 | 25 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
+| 26 | [Wizards And Warriors](https://exercism.org/tracks/java/exercises/wizards-and-warriors) | Inheritance, Access modifiers, If/else, Booleans |
 <!-- EXERCISM-END -->
 
 > 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*
