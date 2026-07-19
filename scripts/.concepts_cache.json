@@ -1,5 +1,5 @@
 {
-  "annalyns-infiltration": "Basic output",
+  "annalyns-infiltration": "\u2014",
   "football-match-reports": "Switch statement",
   "armstrong-numbers": "For loop, While loop, Math class, Type casting, Integers",
   "jedliks-toy-car": "Access modifiers, If/else, Integers",
@@ -9,5 +9,21 @@
   "cars-assemble": "If/else, Type casting, Doubles/floats, Integers",
   "raindrops": "If/else",
   "tim-from-marketing": "If/else, String methods, Null checks",
-  "log-levels": "String methods, Integers"
+  "log-levels": "String methods, Integers",
+  "two-fer": "If/else",
+  "leap": "Basic output",
+  "calculator-conundrum": "Lambda expressions, Switch statement, If/else, Null checks, Integers",
+  "need-for-speed": "Constructors, Access modifiers, While loop, If/else, Integers",
+  "reverse-string": "StringBuilder",
+  "resistor-color": "Access modifiers, For loop, If/else, Arrays, Constants",
+  "captains-log": "Access modifiers, Char operations, Arrays, Constants",
+  "lasagna": "Integers",
+  "bird-watcher": "Constructors, Access modifiers, For loop, If/else, Arrays",
+  "high-scores": "Generics, ArrayList, Collections API, Constructors, Access modifiers",
+  "acronym": "Access modifiers, For loop, If/else, String methods, Char operations",
+  "wizards-and-warriors": "Inheritance, Access modifiers, If/else, Booleans",
+  "squeaky-clean": "Switch statement, If/else, StringBuilder, String methods, Char operations",
+  "secrets": "Basic output",
+  "darts": "If/else, Math class, Doubles/floats",
+  "say": "Access modifiers, If/else, Arrays, Type casting, Constants"
 }
