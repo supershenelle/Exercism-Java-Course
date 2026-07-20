@@ -20,7 +20,7 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | # | Exercise | Concepts Used |
 |---|----------|---------------|
 | 1 | [Acronym](https://exercism.org/tracks/java/exercises/acronym) | Access modifiers, For loop, If/else, String methods, Char operations |
-| 2 | [Annalyns Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | — |
+| 2 | [Annalyns Infiltration](https://exercism.org/tracks/java/exercises/annalyns-infiltration) | Basic output |
 | 3 | [Armstrong Numbers](https://exercism.org/tracks/java/exercises/armstrong-numbers) | For loop, While loop, Math class, Type casting, Integers |
 | 4 | [Bird Watcher](https://exercism.org/tracks/java/exercises/bird-watcher) | Constructors, Access modifiers, For loop, If/else, Arrays |
 | 5 | [Booking Up For Beauty](https://exercism.org/tracks/java/exercises/booking-up-for-beauty) | Basic output |
