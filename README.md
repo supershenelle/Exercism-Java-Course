@@ -39,15 +39,16 @@ This repository documents my personal Java learning journey on **Exercism** — 
 | 18 | [Logs Logs Logs](https://exercism.org/tracks/java/exercises/logs-logs-logs) | Lambda expressions, Enums, Constructors, Access modifiers, Switch statement |
 | 19 | [Need For Speed](https://exercism.org/tracks/java/exercises/need-for-speed) | Constructors, Access modifiers, While loop, If/else, Integers |
 | 20 | [Raindrops](https://exercism.org/tracks/java/exercises/raindrops) | If/else |
-| 21 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
-| 22 | [Reverse String](https://exercism.org/tracks/java/exercises/reverse-string) | StringBuilder |
-| 23 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
-| 24 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
-| 25 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
-| 26 | [Squeaky Clean](https://exercism.org/tracks/java/exercises/squeaky-clean) | Switch statement, If/else, StringBuilder, String methods, Char operations |
-| 27 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
-| 28 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
-| 29 | [Wizards And Warriors](https://exercism.org/tracks/java/exercises/wizards-and-warriors) | Inheritance, Access modifiers, If/else, Booleans |
+| 21 | [Remote Control Competition](https://exercism.org/tracks/java/exercises/remote-control-competition) | Generics, Interfaces, Access modifiers, Integers |
+| 22 | [Resistor Color](https://exercism.org/tracks/java/exercises/resistor-color) | Access modifiers, For loop, If/else, Arrays, Constants |
+| 23 | [Reverse String](https://exercism.org/tracks/java/exercises/reverse-string) | StringBuilder |
+| 24 | [Salary Calculator](https://exercism.org/tracks/java/exercises/salary-calculator) | Ternary operator |
+| 25 | [Say](https://exercism.org/tracks/java/exercises/say) | Access modifiers, If/else, Arrays, Type casting, Constants |
+| 26 | [Secrets](https://exercism.org/tracks/java/exercises/secrets) | Basic output |
+| 27 | [Squeaky Clean](https://exercism.org/tracks/java/exercises/squeaky-clean) | Switch statement, If/else, StringBuilder, String methods, Char operations |
+| 28 | [Tim From Marketing](https://exercism.org/tracks/java/exercises/tim-from-marketing) | If/else, String methods, Null checks |
+| 29 | [Two Fer](https://exercism.org/tracks/java/exercises/two-fer) | If/else |
+| 30 | [Wizards And Warriors](https://exercism.org/tracks/java/exercises/wizards-and-warriors) | Inheritance, Access modifiers, If/else, Booleans |
 <!-- EXERCISM-END -->
 
 > 📌 *Auto-updated by GitHub Actions whenever you complete a new exercise.*
