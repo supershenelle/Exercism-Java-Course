@@ -30,9 +30,11 @@
   "high-scores": "Generics, ArrayList, Collections API, Constructors, Access modifiers",
   "acronym": "Access modifiers, For loop, If/else, String methods, Char operations",
   "wizards-and-warriors": "Inheritance, Access modifiers, If/else, Booleans",
+  "protein-translation": "Generics, ArrayList, Switch statement, For loop, If/else",
   "squeaky-clean": "Switch statement, If/else, StringBuilder, String methods, Char operations",
   "secrets": "Basic output",
   "space-age": "Access modifiers, Constants, Doubles/floats",
   "darts": "If/else, Math class, Doubles/floats",
+  "resistor-color-trio": "Generics, Arrays utility, Access modifiers, If/else, String methods",
   "say": "Access modifiers, If/else, Arrays, Type casting, Constants"
 }
