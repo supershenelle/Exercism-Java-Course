@@ -34,7 +34,5 @@
   "squeaky-clean": "Switch statement, If/else, StringBuilder, String methods, Char operations",
   "secrets": "Basic output",
   "space-age": "Access modifiers, Constants, Doubles/floats",
-  "darts": "If/else, Math class, Doubles/floats",
-  "resistor-color-trio": "Generics, Arrays utility, Access modifiers, If/else, String methods",
-  "say": "Access modifiers, If/else, Arrays, Type casting, Constants"
+  "darts": "If/else, Math class, Doubles/floats"
 }
